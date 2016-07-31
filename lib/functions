@@ -1,0 +1,46 @@
+#!/bin/bash
+#####################################
+# Generic functions
+#####################################
+
+function discover()
+{
+    local file=$1
+    local where="$PRODUCT_NAME/$MAJOR_RELEASE/$VERSION/$CUSTOM_MODIFICATION"
+    local split=$(echo $where | tr "/" " ")
+    local array=($split)
+    local arr_len=${#array[@]}
+
+    for (( i=${arr_len}; i>0; i-- )); do
+        local path=""
+
+        for (( j=0; j<$i; j++ )); do
+            path+="${array[$j]}/"
+        done
+
+        #echo $i $RUN_DIR/$path/$file
+        if [ -f "${path}${file}" ]; then
+            echo "${path}${file}"
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+function require_file()
+{
+    local file=$1
+    local path=$(discover "$file")
+    local exit_code=$?
+
+    set -e
+
+    if [[ $exit_code -eq 0 ]]; then
+        . "$path"
+    else
+        echo "ERROR: Failed to load $file"
+        exit 2
+    fi
+}
+
