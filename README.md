@@ -29,7 +29,7 @@ export VERSION="7.2.1"
 export CUSTOM_MODIFICATION="some_fix"
 ```
 
-## What will happen
+## What will happen?
 The build script will scan the application folder (./ExampleProject) looking for _build_steps.sh file.  
 This file defines all the build steps required to build the ExampleApp.  
 
@@ -42,4 +42,15 @@ Once we know our steps, the script will scan the application directory backwards
 
 As a result, *1_gether_artifacts.sh* will be taken from *ExampleProject/7/* directory, *2_build_step.sh* will be taken from *ExampleProject/7/7.2.1/some_fix*.
 
-And the *3_build_step.sh* and *cleanup.sh* will be executed from the default file located inside the default project directory.
+And the *3_build_step.sh* and *cleanup.sh* will be executed from the default file located inside the default project directory, as long as there is no other alternative.  
+
+## Things to notice
+1. You can also override the *_build_steps.sh* file inside a version directory, for example.
+2. cleanup.sh is running before program is finished and on HUP, TERM, INT signals.
+3. *getopts.sh* will help you define your own args and variables. Based on: https://github.com/nk412/optparse 
+
+## Installation
+Clone the repo with *--recursive* flag!
+```
+git clone --recursive https://github.com/sysboss/build_scripts_sdk.git
+```
