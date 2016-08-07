@@ -2,6 +2,31 @@
 #####################################
 # Generic functions
 #####################################
+# Alexey Baikov <sysboss[@]mail.ru>
+#####################################
+
+die()
+{
+    echo $@
+    exit 126
+}
+
+lock()
+{
+    local fd=${200:-$LOCK_FD}
+
+    # create lock file
+    eval "exec $fd>$LOCKFILE"
+
+    # acquier the lock
+    flock -n $fd \
+        && return 0 \
+        || return 1
+}
+
+lock_remove() {
+    rm -f $LOCKFILE
+}
 
 function discover()
 {
@@ -36,7 +61,7 @@ function require_file()
 
     set -e
 
-    if [[ $exit_code -eq 0 ]]; then
+    if [[ -e $path ]]; then
         . "$path"
     else
         echo "ERROR: Failed to load $file"
