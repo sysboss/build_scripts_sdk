@@ -63,6 +63,9 @@ source $(optparse.build)
 # use sudo if needed
 [ "${USE_SUDO}" == "true" ] && SUDO=$(which sudo)
 
+# log to file
+[ "x${LOG_FILE}" != "x" ] && logToFile
+
 # use lock if needed
 if [ "${USE_LOCK}" == "true" ]; then
     lock || die "Only one instance can run at a time"

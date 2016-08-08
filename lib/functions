@@ -5,13 +5,13 @@
 # Alexey Baikov <sysboss[@]mail.ru>
 #####################################
 
-die()
+function die()
 {
     echo $@
     exit 126
 }
 
-lock()
+function lock()
 {
     local fd=${200:-$LOCK_FD}
 
@@ -24,8 +24,14 @@ lock()
         || return 1
 }
 
-lock_remove() {
+function lock_remove() {
     rm -f $LOCKFILE
+}
+
+function logToFile()
+{
+    exec > $LOG_FILE
+    exec 2>&1
 }
 
 function discover()
