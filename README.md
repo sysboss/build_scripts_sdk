@@ -19,6 +19,9 @@ ExampleProject/
 ├── getopts.sh
 └── init_vars.sh
 ```
+Each project will have its own directory (can be a git repo) with its own build steps and argv options related to the project. 
+ 
+When building the product, we need to specify its name, major release and a full version number.  
 
 ## Required input
 Let's define important variables
@@ -30,7 +33,7 @@ export CUSTOM_MODIFICATION="some_fix"
 ```
 
 ## What will happen?
-The build script will scan the application folder (./ExampleProject) looking for _build_steps.sh file.  
+The build script will scan the project folder (./ExampleProject) looking for _build_steps.sh file.  
 This file defines all the build steps required to build the ExampleApp.  
 
 In our case, it's:
@@ -38,11 +41,24 @@ In our case, it's:
  - 2_build_step.sh
  - 3_build_step.sh
 
-Once we know our steps, the script will scan the application directory backwards starting from *ExampleProject/7/7.2.1/some_fix* and execute build steps related to the version you are trying to build.  
+Once we know our steps, the script will scan the directory backwards starting from *ExampleProject/7/7.2.1/some_fix* and execute build steps related to the version you are trying to build.  
 
 As a result, *1_gether_artifacts.sh* will be taken from *ExampleProject/7/* directory, *2_build_step.sh* will be taken from *ExampleProject/7/7.2.1/some_fix*.
 
 And the *3_build_step.sh* and *cleanup.sh* will be executed from the default file located inside the default project directory, as long as there is no other alternative.  
+
+## What is it good for?
+Makes Jenkins jobs very simple:
+```
+export PRODUCT_NAME="ExampleProject"
+export MAJOR_RELEASE="7"
+export VERSION="7.2.1"
+export CUSTOM_MODIFICATION="some_fix"
+
+./build.sh --workspace=WORKSPACE/ --app-path http://artifactory/ExampleProject/application.tar.gz --sudo
+```
+All the build steps are in a repository and you can build any version you like.
+
 
 ## Things to notice
 1. You can also override the *_build_steps.sh* file inside a version directory, for example.
